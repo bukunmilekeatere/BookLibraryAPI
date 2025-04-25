@@ -5,11 +5,11 @@ using BookLibraryAPI.Models;
 
 namespace BookLibraryAPI.Controllers
 {
-    public class LoanController : ControllerBase
+    public class BookLoanController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
 
-        public LoanController(BookLibraryAPIDbContext context)
+        public BookLoanController(BookLibraryAPIDbContext context)
         {
             _context = context;
         }

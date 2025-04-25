@@ -13,7 +13,7 @@ namespace BookLibraryAPI.Models
 
         public int MagazineId { get; set; }
 
-        public int NewspaperID { get; set; }    
+        public int NewspaperId { get; set; }    
 
         public DateTime LoanDue {  get; set; }
 

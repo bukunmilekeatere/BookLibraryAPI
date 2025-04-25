@@ -35,10 +35,47 @@ namespace BookLibraryAPI.Controllers
         }
 
         [HttpGet("api/magazines")]
-        public IActionResult GetBooks()
+        public IActionResult GetMagazines()
         {
             var magazine = _context.Magazines.ToList();
             return Ok(magazine);
+        }
+
+        [Authorize(Roles = "Librarian")]
+        [HttpPut("api/magazines/{id}")]
+
+        public async Task<IActionResult> UpdateMagazines(int id, [FromBody] Magazines model)
+        {
+            var magazine = await _context.Magazines.FindAsync(id);
+            if (magazine == null)
+            {
+                return NotFound();
+            }
+
+            magazine.Title = model.Title;
+            magazine.Distributor = model.Distributor;
+            magazine.AuthorName = model.AuthorName;
+            magazine.DueDate = model.DueDate;
+            magazine.CheckedOut = model.CheckedOut;
+            magazine.SerialNumber = model.SerialNumber;
+
+            await _context.SaveChangesAsync();
+            return Ok("The magazine was successfully updated");
+        }
+
+        [Authorize(Roles = "Librarian")]
+        [HttpDelete("api/magazines/{id}")]
+        public async Task<IActionResult> DeleteMagazines(int id)
+        {
+            var magazine = await _context.Magazines.FindAsync(id);
+            if (magazine == null)
+            {
+                return NotFound();
+            }
+
+            _context.Magazines.Remove(magazine);
+            await _context.SaveChangesAsync();
+            return Ok("The magazine was successfully deleted");
         }
     }
 }

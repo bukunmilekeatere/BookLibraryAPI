@@ -40,5 +40,43 @@ namespace BookLibraryAPI.Controllers
             var newspaper = _context.Newspapers.ToList();
             return Ok(newspaper);
         }
+
+        [Authorize(Roles = "Librarian")]
+        [HttpPut("api/newspapers/{id}")]
+
+        public async Task<IActionResult> UpdateNewspapers(int id, [FromBody] Newspapers model)
+        {
+            var newspaper = await _context.Newspapers.FindAsync(id);
+            if (newspaper == null)
+            {
+                return NotFound();
+            }
+
+            newspaper.Title = model.Title;
+            newspaper.Genre = model.Genre;
+            newspaper.AuthorName = model.AuthorName;
+            newspaper.PageCount = model.PageCount;
+            newspaper.DueDate = model.DueDate;
+            newspaper.CheckedOut = model.CheckedOut;
+            newspaper.SerialNumber = model.SerialNumber;
+
+            await _context.SaveChangesAsync();
+            return Ok("The newspaper was successfully updated");
+        }
+
+        [Authorize(Roles = "Librarian")]
+        [HttpDelete("api/newspapers/{id}")]
+        public async Task<IActionResult> DeleteNewspapers(int id)
+        {
+            var newspaper = await _context.Newspapers.FindAsync(id);
+            if (newspaper == null)
+            {
+                return NotFound();
+            }
+
+            _context.Newspapers.Remove(newspaper);
+            await _context.SaveChangesAsync();
+            return Ok("The newspaper was successfully deleted");
+        }
     }
 }
