@@ -5,6 +5,7 @@ using BookLibraryAPI.Models;
 
 namespace BookLibraryAPI.Controllers
 {
+    // Manage personal libraries or track borrowed books.
     public class BookLoanController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
@@ -23,7 +24,7 @@ namespace BookLibraryAPI.Controllers
 
             if (book == null)
             {
-                return NotFound("The book was found");
+                return NotFound("The book was not found");
             }
 
             var id = User.Identity?.Name;
@@ -44,5 +45,23 @@ namespace BookLibraryAPI.Controllers
 
             return Ok("Successful");
         }
+
+        [HttpPost("api/return/{bookId}")]
+        public async Task<IActionResult> Return(int bookId)
+        {
+            var id = User.Identity?.Name;
+            var loan = _context.Loans.FirstOrDefault(l => l.UserId == id && l.BookId == bookId);
+
+            if (loan == null)
+            {
+                return BadRequest("No loan record found for this book and user.");
+            }
+
+            _context.Loans.Remove(loan);
+            await _context.SaveChangesAsync();
+
+            return Ok("Book returned successfully.");
+        }
+
     }
 }

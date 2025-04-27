@@ -16,6 +16,9 @@ namespace BookLibraryAPI
 
         public DbSet<Loan> Loans { get; set; }
 
+        public DbSet<Author> Authors { get; set; }
+
+
         public BookLibraryAPIDbContext(DbContextOptions<BookLibraryAPIDbContext> options) : base(options)
         {
         }
