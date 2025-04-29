@@ -1,6 +1,59 @@
-@BookLibraryAPI_HostAddress = http://localhost:5133
+﻿@BookLibraryAPI_HostAddress = http://localhost:5133
 
-GET {{BookLibraryAPI_HostAddress}}/weatherforecast/
+### Create (POST) a new book
+POST {{BookLibraryAPI_HostAddress}}/api/books
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Sample Book",
+  "genre": "Fiction",
+  "authorId": 1,
+  "dueDate": "2025-12-31",
+  "pageCount": 350
+}
+
+###
+
+### Get (GET) all books
+GET {{BookLibraryAPI_HostAddress}}/api/books
 Accept: application/json
 
+###
+
+### Update (PUT) a book
+PUT {{BookLibraryAPI_HostAddress}}/api/books/1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Updated Sample Book",
+  "genre": "Science Fiction",
+  "authorId": 1,
+  "dueDate": "2026-01-01",
+  "checkedOut": false,
+  "pageCount": 400
+}
+
+###
+
+### Delete (DELETE) a book
+DELETE {{BookLibraryAPI_HostAddress}}/api/books/1
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+###
+
+### Search (GET) books with caching and pagination
+GET {{BookLibraryAPI_HostAddress}}/api/books/search?title=Sample&page=1&pageSize=5
+Accept: application/json
+
+###
+### Login to get JWT Token
+POST {{BookLibraryAPI_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "your-email@example.com",
+  "password": "your-password"
+}
 ###

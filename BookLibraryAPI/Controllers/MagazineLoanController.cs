@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BookLibraryAPI.Models;
 
 namespace BookLibraryAPI.Controllers
 {
+    [Route("api/magazineloan")]
+    [ApiController]
     public class MagazineLoanController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
@@ -15,23 +16,15 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpPost("api/loan/{magazineId}")]
-
+        [HttpPost("loan/{magazineId}")]
         public async Task<IActionResult> Loan(int magazineId)
         {
             var magazine = await _context.Magazines.FindAsync(magazineId);
-
-            if (magazine == null)
-            {
-                return NotFound("The magazine was found");
-            }
+            if (magazine == null) return NotFound("Magazine not found.");
 
             var id = User.Identity?.Name;
-
             if (_context.Loans.Any(l => l.UserId == id && l.MagazineId == magazineId))
-            {
-                return BadRequest("User has already loaned this magazine");
-            }
+                return BadRequest("User has already loaned this magazine.");
 
             var loan = new Loan
             {
@@ -42,7 +35,7 @@ namespace BookLibraryAPI.Controllers
             _context.Loans.Add(loan);
             await _context.SaveChangesAsync();
 
-            return Ok("Successful");
+            return Ok("Magazine loaned successfully.");
         }
     }
 }

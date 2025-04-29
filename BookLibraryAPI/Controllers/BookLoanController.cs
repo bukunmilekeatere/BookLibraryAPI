@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BookLibraryAPI.Models;
 
 namespace BookLibraryAPI.Controllers
 {
-    // Manage personal libraries or track borrowed books.
+    [Route("api/bookloan")]
+    [ApiController]
     public class BookLoanController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
@@ -16,23 +16,15 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpPost("api/loan/{bookId}")]
-
+        [HttpPost("loan/{bookId}")]
         public async Task<IActionResult> Loan(int bookId)
         {
             var book = await _context.Books.FindAsync(bookId);
-
-            if (book == null)
-            {
-                return NotFound("The book was not found");
-            }
+            if (book == null) return NotFound("Book not found.");
 
             var id = User.Identity?.Name;
-
-            if (_context.Loans.Any(l => l.UserId == id && l.BookId  == bookId))
-            {
-                return BadRequest("User has already loaned this book");
-            }
+            if (_context.Loans.Any(l => l.UserId == id && l.BookId == bookId))
+                return BadRequest("User has already loaned this book.");
 
             var loan = new Loan
             {
@@ -43,25 +35,22 @@ namespace BookLibraryAPI.Controllers
             _context.Loans.Add(loan);
             await _context.SaveChangesAsync();
 
-            return Ok("Successful");
+            return Ok("Book loaned successfully.");
         }
 
-        [HttpPost("api/return/{bookId}")]
+        [Authorize(Roles = "User")]
+        [HttpPost("return/{bookId}")]
         public async Task<IActionResult> Return(int bookId)
         {
             var id = User.Identity?.Name;
             var loan = _context.Loans.FirstOrDefault(l => l.UserId == id && l.BookId == bookId);
 
-            if (loan == null)
-            {
-                return BadRequest("No loan record found for this book and user.");
-            }
+            if (loan == null) return BadRequest("No loan record found for this book and user.");
 
             _context.Loans.Remove(loan);
             await _context.SaveChangesAsync();
 
             return Ok("Book returned successfully.");
         }
-
     }
 }

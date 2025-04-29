@@ -19,9 +19,9 @@ namespace BookLibraryAPI.Controllers
         [HttpPost("api/magazines")]
 
         // create books = log books (logging books into library)
-        public async Task<IActionResult> LogMagazines([FromBody] Magazines model)
+        public async Task<IActionResult> LogMagazines([FromBody] Magazine model)
         {
-            var magazine = new Magazines
+            var magazine = new Magazine
             {
                 Title = model.Title,
                 AuthorName = model.AuthorName,
@@ -44,7 +44,7 @@ namespace BookLibraryAPI.Controllers
         [Authorize(Roles = "Librarian")]
         [HttpPut("api/magazines/{id}")]
 
-        public async Task<IActionResult> UpdateMagazines(int id, [FromBody] Magazines model)
+        public async Task<IActionResult> UpdateMagazines(int id, [FromBody] Magazine model)
         {
             var magazine = await _context.Magazines.FindAsync(id);
             if (magazine == null)
