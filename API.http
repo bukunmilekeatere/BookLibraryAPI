@@ -1,0 +1,59 @@
+### Register a new user (with role)
+POST https://localhost:5001/api/account/register
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Test@123",
+  "role": "Student"
+}
+
+### Login the user and get cookie-based auth
+POST https://localhost:5001/api/account/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "Test@123"
+}
+
+### Get all books (second request should be cached)
+GET https://localhost:5001/api/books
+
+### Add a new book
+POST https://localhost:5001/api/books
+Content-Type: application/json
+
+{
+  "title": "Caching Book",
+  "genre": "Education",
+  "pageCount": 250
+}
+
+### Get a single book by ID (example: ID = 1)
+GET https://localhost:5001/api/books/1
+
+### Update a book
+PUT https://localhost:5001/api/books/1
+Content-Type: application/json
+
+{
+  "title": "Updated Caching Book",
+  "genre": "Science",
+  "pageCount": 275
+}
+
+### Delete a book
+DELETE https://localhost:5001/api/books/1
+
+### Try to add a book with invalid data (expect 400)
+POST https://localhost:5001/api/books
+Content-Type: application/json
+
+{
+  "genre": "NoTitle",
+  "pageCount": -10
+}
+
+### Access a protected endpoint without being logged in (expect 401)
+GET https://localhost:5001/api/protected-books

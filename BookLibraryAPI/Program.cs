@@ -7,8 +7,14 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
+
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddMemoryCache();
 
 // Register the Swagger services
 builder.Services.AddEndpointsApiExplorer();
@@ -89,5 +95,7 @@ app.UseAuthentication();  // Enable Authentication
 app.UseAuthorization();   // Enable Authorization
 
 app.MapControllers();
+
+
 
 app.Run();

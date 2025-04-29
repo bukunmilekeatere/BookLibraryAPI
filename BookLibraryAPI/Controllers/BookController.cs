@@ -22,7 +22,7 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpPost("api/books")]
+        [HttpPost("logbooks")]
 
         // create books = log books (logging books into library)
         public async Task<IActionResult> LogBooks([FromBody] Books model)
@@ -41,7 +41,7 @@ namespace BookLibraryAPI.Controllers
             return Ok("The book was successfully logged");
         }
 
-        [HttpGet("api/books")]
+        [HttpGet("getbooks")]
         public IActionResult GetBooks()
         {
             var book = _context.Books.ToList();
@@ -50,7 +50,7 @@ namespace BookLibraryAPI.Controllers
 
 
         [Authorize(Roles = "Librarian")]
-        [HttpPut("api/books/{id}")]
+        [HttpPut("{id}")]
 
         public async Task<IActionResult> UpdateBook(int id, [FromBody] Books model)
         {
@@ -72,7 +72,7 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles ="Librarian")]
-        [HttpDelete("api/books/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);
