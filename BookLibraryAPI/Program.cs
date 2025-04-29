@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // Add Bearer token security definition
+    
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -23,7 +23,6 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.ApiKey
     });
 
-    // Add security requirement to apply the Bearer token globally
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -54,14 +53,14 @@ builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:5001";  // Replace with your authentication provider
-        options.Audience = "api1"; // Replace with your API audience
+        options.Audience = "api1"; 
         options.RequireHttpsMetadata = false;
     });
 
-// Register other services (Swagger UI and any other services)
+
 var app = builder.Build();
 
-// Apply migrations and seed the database on startup
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -82,7 +81,7 @@ if (app.Environment.IsDevelopment())
     {
         options.OAuthClientId("swagger-client");
         options.OAuthAppName("Swagger API Client");
-    });  // This middleware serves the Swagger UI
+    });  
 }
 
 // Enable authentication and authorization middleware
