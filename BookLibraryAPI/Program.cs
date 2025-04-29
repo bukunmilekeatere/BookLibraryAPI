@@ -4,7 +4,7 @@ using BookLibraryAPI;
 using BookLibraryAPI.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace BookLibraryAPI  // 👈 Make sure your namespace matches your project name
+namespace BookLibraryAPI  // 
 {
     public class Program
     {
