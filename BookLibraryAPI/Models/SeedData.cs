@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using BookLibraryAPI.Models;
 
 namespace BookLibraryAPI
-{
+{  
     public static class SeedData
     {
         public static async Task InitializeAsync(IServiceProvider serviceProvider)
