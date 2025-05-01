@@ -20,7 +20,7 @@ namespace BookLibraryAPI
                 context.Database.Migrate();
 
                 // Seed Roles
-                string[] roles = new[] { "Admin", "User" };
+                string[] roles = new[] { "Admin", "User", "Librarian" };
                 foreach (var role in roles)
                 {
                     if (!await roleManager.RoleExistsAsync(role))
@@ -28,6 +28,19 @@ namespace BookLibraryAPI
                         await roleManager.CreateAsync(new IdentityRole(role));
                     }
                 }
+                //seed librarian user
+                if (await userManager.FindByEmailAsync("librarian@example.com") == null)
+                {
+                    var librarian = new IdentityUser
+                    {
+                        UserName = "librarian@example.com",
+                        Email = "librarian@example.com",
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(librarian, "Librarian123!");
+                    await userManager.AddToRoleAsync(librarian, "Librarian");
+                }
+
 
                 // Seed Admin User
                 if (await userManager.FindByEmailAsync("admin@example.com") == null)
@@ -103,7 +116,7 @@ namespace BookLibraryAPI
                             Distributor = "Time Inc.",
                             SerialNumber = 101,
                             AuthorName = "Various",
-                            DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(14)),
+                            DueDate = null,
                             CheckedOut = false,
                             LibrarianId = null
                         },
@@ -114,11 +127,43 @@ namespace BookLibraryAPI
                             Distributor = "NatGeo",
                             SerialNumber = 102,
                             AuthorName = "Various",
-                            DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(21)),
+                            DueDate = null,
                             CheckedOut = false,
                             LibrarianId = null
                         }
                     );
+
+                }
+                //Seed Newspaper
+                if (!context.Newspapers.Any())
+                {
+                    context.Newspapers.AddRange(
+                        new Newspaper
+                        {
+                            Title = "The Daily Times",
+                            Genre = "General News",
+                            AuthorName = "Editorial Board",
+                            SerialNumber = 201,
+                            PageCount = 28,
+                            DatePublished = new DateTime(2025, 3, 15),
+                            DueDate = null,
+                            CheckedOut = false,
+                            LibrarianId = null
+                        },
+                        new Newspaper
+                        {
+                            Title = "Global Gazette",
+                            Genre = "World Affairs",
+                            AuthorName = "International Desk",
+                            SerialNumber = 202,
+                            PageCount = 32,
+                            DatePublished = new DateTime(2025, 4, 1),
+                            DueDate = null,
+                            CheckedOut = false,
+                            LibrarianId = null
+                        }
+                    );
+
                 }
             }
         }

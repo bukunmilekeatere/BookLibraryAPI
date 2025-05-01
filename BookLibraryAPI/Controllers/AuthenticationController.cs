@@ -33,40 +33,28 @@ public class AuthenticationController : ControllerBase
         var user = new IdentityUser { UserName = model.Email, Email = model.Email };
         var result = await _userManager.CreateAsync(user, model.Password);
 
-        if (result.Succeeded)
-        {
-            if (!await _roleManager.RoleExistsAsync(model.Role))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(model.Role));
-            }
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
 
-            await _userManager.AddToRoleAsync(user, model.Role);
+        if (!await _roleManager.RoleExistsAsync(model.Role))
+            await _roleManager.CreateAsync(new IdentityRole(model.Role));
 
-            return Ok("Registered successfully");
-        }
-
-        return BadRequest(result.Errors);
+        await _userManager.AddToRoleAsync(user, model.Role);
+        return Ok("Registered successfully");
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
-
         if (user == null)
             return Unauthorized("Invalid login attempt");
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
         if (!result.Succeeded)
             return Unauthorized("Invalid login attempt");
 
-        // Get user's roles
-        var roles = await _userManager.GetRolesAsync(user);
-
-        var token = GenerateJwtToken(user, roles);
-
-        return Ok(new { Token = token });
+        return Ok("Login successful");
     }
 
     [HttpPost("logout")]
@@ -76,31 +64,4 @@ public class AuthenticationController : ControllerBase
         return Ok("Logout successful");
     }
 
-    private string GenerateJwtToken(IdentityUser user, IList<string> roles)
-    {
-        var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Name, user.UserName)
-        };
-
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 }

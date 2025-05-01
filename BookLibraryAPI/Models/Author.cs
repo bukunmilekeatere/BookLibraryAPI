@@ -6,6 +6,5 @@ namespace BookLibraryAPI.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Books> Books { get; set; }  // A list of books for the author
     }
 }

@@ -9,8 +9,8 @@
         public bool CheckedOut { get; set; }
         public DateTime? DueDate { get; set; }
 
-        public int AuthorId { get; set; }  // Foreign key (important)
-        public Author Author { get; set; } // Navigation property
+        public int? AuthorId { get; set; }  // Foreign key (important)
+        public Author? Author { get; set; } // Navigation property
 
         public string LibrarianId { get; set; } // Librarian's ID (still string)
     }

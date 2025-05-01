@@ -37,5 +37,20 @@ namespace BookLibraryAPI.Controllers
 
             return Ok("Newspaper loaned successfully.");
         }
+
+        [Authorize(Roles = "User")]
+        [HttpPost("return/{newspaperId}")]
+        public async Task<IActionResult> Return(int newspaperId)
+        {
+            var id = User.Identity?.Name;
+            var loan = _context.Loans.FirstOrDefault(l => l.UserId == id && l.NewspaperId == newspaperId);
+
+            if (loan == null) return BadRequest("No loan record found for this book and user.");
+
+            _context.Loans.Remove(loan);
+            await _context.SaveChangesAsync();
+
+            return Ok("Book returned successfully.");
+        }
     }
 }

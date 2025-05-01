@@ -6,6 +6,7 @@ using BookLibraryAPI.Models;
 namespace BookLibraryAPI.Controllers
 {
     [ApiController]
+    [Route("api/newspapers")]
     public class NewspaperController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
@@ -15,17 +16,20 @@ namespace BookLibraryAPI.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Librarian")]
-        [HttpPost("api/newspapers")]
 
-        // create books = log books (logging books into library)
-        public async Task<IActionResult> LogNewspapers([FromBody] Newspaper model)
+        [Authorize(Roles = "Librarian")]
+        [HttpPost("lognewspapers")]
+
+        // create books = log newspaper (logging newspaper into library)
+        public async Task<IActionResult> LogNewspapers([FromBody] NewspaperDto model)
         {
             var newspaper = new Newspaper
             {
                 Title = model.Title,
                 AuthorName = model.AuthorName,
                 DueDate = model.DueDate,
+                Genre = model.Genre,
+                CheckedOut = model.CheckedOut,
                 LibrarianId = User.Identity?.Name
             };
             _context.Newspapers.Add(newspaper);
@@ -34,7 +38,7 @@ namespace BookLibraryAPI.Controllers
             return Ok("The newspaper was successfully logged");
         }
 
-        [HttpGet("api/newspapers")]
+        [HttpGet("getnewspapers")]
         public IActionResult GetNewspapers()
         {
             var newspaper = _context.Newspapers.ToList();
@@ -42,9 +46,9 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpPut("api/newspapers/{id}")]
+        [HttpPut("update/{id}")]
 
-        public async Task<IActionResult> UpdateNewspapers(int id, [FromBody] Newspaper model)
+        public async Task<IActionResult> UpdateNewspapers(int id, [FromBody] NewspaperDto model)
         {
             var newspaper = await _context.Newspapers.FindAsync(id);
             if (newspaper == null)
@@ -55,17 +59,15 @@ namespace BookLibraryAPI.Controllers
             newspaper.Title = model.Title;
             newspaper.Genre = model.Genre;
             newspaper.AuthorName = model.AuthorName;
-            newspaper.PageCount = model.PageCount;
             newspaper.DueDate = model.DueDate;
             newspaper.CheckedOut = model.CheckedOut;
-            newspaper.SerialNumber = model.SerialNumber;
 
             await _context.SaveChangesAsync();
             return Ok("The newspaper was successfully updated");
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpDelete("api/newspapers/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteNewspapers(int id)
         {
             var newspaper = await _context.Newspapers.FindAsync(id);

@@ -18,32 +18,7 @@ builder.Services.AddMemoryCache();
 
 // Register the Swagger services
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid JWT token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
+builder.Services.AddSwaggerGen(options =>{});
 
 // Configure the database context
 builder.Services.AddDbContext<BookLibraryAPIDbContext>(options =>
@@ -54,14 +29,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<BookLibraryAPIDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT Authentication (replace with your Auth provider details)
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://localhost:5001";  // Replace with your authentication provider
-        options.Audience = "api1"; 
-        options.RequireHttpsMetadata = false;
-    });
 
 
 var app = builder.Build();

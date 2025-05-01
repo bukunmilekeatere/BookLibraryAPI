@@ -23,9 +23,8 @@ namespace BookLibraryAPI.Controllers
 
         [Authorize(Roles = "Librarian")]
         [HttpPost("logbooks")]
-
         // create books = log books (logging books into library)
-        public async Task<IActionResult> LogBooks([FromBody] Books model)
+        public async Task<IActionResult> LogBooks([FromBody] LogBookDto model)
         {
             var book = new Books
             {
@@ -50,9 +49,9 @@ namespace BookLibraryAPI.Controllers
 
 
         [Authorize(Roles = "Librarian")]
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
 
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] Books model)
+        public async Task<IActionResult> UpdateBook(int id, [FromBody] LogBookDto model)
         {
             var book = await _context.Books.FindAsync(id);
             if (book == null)
@@ -72,7 +71,7 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles ="Librarian")]
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);

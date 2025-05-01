@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BookLibraryAPI.Models;
+using BookLibraryAPI.ModelDto;
 
 namespace BookLibraryAPI.Controllers
 {
     [ApiController]
+    [Route("api/magazines")]
     public class MagazineController : ControllerBase
     {
         private readonly BookLibraryAPIDbContext _context;
@@ -16,16 +18,16 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpPost("api/magazines")]
-
-        // create books = log books (logging books into library)
-        public async Task<IActionResult> LogMagazines([FromBody] Magazine model)
+        [HttpPost("logmagazines")]
+        // create books = log magazines (logging magazines into library)
+        public async Task<IActionResult> LogMagazines([FromBody] MagazineDto model)
         {
             var magazine = new Magazine
             {
                 Title = model.Title,
                 AuthorName = model.AuthorName,
                 DueDate = model.DueDate,
+                Issue = model.Issue,
                 LibrarianId = User.Identity?.Name
             };
             _context.Magazines.Add(magazine);
@@ -34,7 +36,7 @@ namespace BookLibraryAPI.Controllers
             return Ok("The magazine was successfully logged");
         }
 
-        [HttpGet("api/magazines")]
+        [HttpGet("getmagazines")]
         public IActionResult GetMagazines()
         {
             var magazine = _context.Magazines.ToList();
@@ -42,7 +44,7 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpPut("api/magazines/{id}")]
+        [HttpPut("update/{id}")]
 
         public async Task<IActionResult> UpdateMagazines(int id, [FromBody] Magazine model)
         {
@@ -64,7 +66,7 @@ namespace BookLibraryAPI.Controllers
         }
 
         [Authorize(Roles = "Librarian")]
-        [HttpDelete("api/magazines/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteMagazines(int id)
         {
             var magazine = await _context.Magazines.FindAsync(id);

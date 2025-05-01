@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BookLibraryAPI.Models;
+using System.Reflection.Emit;
 
 namespace BookLibraryAPI
 {
@@ -27,6 +28,8 @@ namespace BookLibraryAPI
                 new Author { Id = 2, Name = "Jane Austen" }
             );
 
+
+
             // Seed Book with foreign key AuthorId
             builder.Entity<Books>().HasData(
                 new Books
@@ -38,7 +41,7 @@ namespace BookLibraryAPI
                     CheckedOut = false,
                     DueDate = null,
                     AuthorId = 2,
-                    LibrarianId = "lib123"
+                    LibrarianId = "lib213"
                 },
                 new Books
                 {
