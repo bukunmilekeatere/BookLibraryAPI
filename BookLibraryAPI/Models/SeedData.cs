@@ -20,7 +20,7 @@ namespace BookLibraryAPI
                 context.Database.Migrate();
 
                 // Seed Roles
-                string[] roles = new[] { "Admin", "User", "Librarian" };
+                string[] roles = new[] { "User", "Librarian" };
                 foreach (var role in roles)
                 {
                     if (!await roleManager.RoleExistsAsync(role))
@@ -39,20 +39,6 @@ namespace BookLibraryAPI
                     };
                     await userManager.CreateAsync(librarian, "Librarian123!");
                     await userManager.AddToRoleAsync(librarian, "Librarian");
-                }
-
-
-                // Seed Admin User
-                if (await userManager.FindByEmailAsync("admin@example.com") == null)
-                {
-                    var admin = new IdentityUser
-                    {
-                        UserName = "admin@example.com",
-                        Email = "admin@example.com",
-                        EmailConfirmed = true
-                    };
-                    await userManager.CreateAsync(admin, "Admin123!");
-                    await userManager.AddToRoleAsync(admin, "Admin");
                 }
 
                 // Seed Normal User
